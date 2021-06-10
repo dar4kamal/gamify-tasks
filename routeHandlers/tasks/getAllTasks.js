@@ -6,17 +6,13 @@ const {
   getRollUpItem,
 } = require("../../utils/getData");
 const notion = require("../../notionClient");
-const { createFilter } = require("../../utils/filters");
+const handleQuery = require("../../utils/handleQuery");
 
 module.exports = async (req, res) => {
   try {
     const userId = req.headers["x-user-id"];
-    // parse filters
-    let filters = req.query;
-    filters = Object.keys(filters).map((filter) => {
-      const [type, condition, value] = filters[filter].split(":");
-      return createFilter({ name: filter, type, condition, value });
-    });
+    const query = req.query;
+    const { sortParams, filters } = handleQuery(query);
 
     if (!userId)
       return res.json({
@@ -42,6 +38,7 @@ module.exports = async (req, res) => {
           ...filters,
         ],
       },
+      sorts: sortParams,
     });
 
     const tasks = results.map((task) => task.properties);
