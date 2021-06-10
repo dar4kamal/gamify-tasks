@@ -1,24 +1,24 @@
 const getTitle = (object) => {
-  return object.title[0].plain_text;
+  return object?.title[0]?.plain_text;
 };
 const getEmail = (object) => {
-  return object.email;
+  return object?.email;
 };
 const getText = (object) => {
-  return object.rich_text[0].plain_text;
+  return object?.rich_text[0]?.plain_text;
 };
 const getNumber = (object) => {
-  return object.number;
+  return object?.number;
 };
 const getDate = (object) => {
-  return object.date.start;
+  return object?.date?.start;
 };
 const getBoolean = (object) => {
-  return object.checkbox;
+  return object?.checkbox;
 };
 
 const getRollUpItem = (object, propertyName, index) => {
-  return object[propertyName].rollup.array[index];
+  return object[propertyName]?.rollup?.array[index];
 };
 
 module.exports = {
