@@ -29,6 +29,7 @@ module.exports = async (req, res) => {
       });
 
     const output = {
+      id: results[usersData.indexOf(selectedUser)].id,
       name: getTitle(selectedUser.name),
       goals: selectedUser.goals.relation.map((goal, index) => {
         return {
