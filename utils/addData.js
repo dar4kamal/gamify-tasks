@@ -33,6 +33,9 @@ const addDate = (input) => {
 const addBoolean = (input) => {
   return { checkbox: input };
 };
+const addRelation = (input) => {
+  return { relation: [{ id: input }] };
+};
 
 module.exports = {
   addDate,
@@ -41,4 +44,5 @@ module.exports = {
   addTitle,
   addNumber,
   addBoolean,
+  addRelation,
 };
