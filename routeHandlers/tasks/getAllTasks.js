@@ -6,10 +6,18 @@ const {
   getRollUpItem,
 } = require("../../utils/getData");
 const notion = require("../../notionClient");
+const { createFilter } = require("../../utils/filters");
 
 module.exports = async (req, res) => {
   try {
     const userId = req.headers["x-user-id"];
+    // parse filters
+    let filters = req.query;
+    filters = Object.keys(filters).map((filter) => {
+      const [type, condition, value] = filters[filter].split(":");
+      return createFilter({ name: filter, type, condition, value });
+    });
+
     if (!userId)
       return res.json({
         statusCode: 401,
@@ -20,13 +28,19 @@ module.exports = async (req, res) => {
           },
         ],
       });
+
     const { results } = await notion.databases.query({
       database_id: process.env.TASKS_DB_ID,
       filter: {
-        property: "user",
-        relation: {
-          contains: userId,
-        },
+        and: [
+          {
+            property: "user",
+            relation: {
+              contains: userId,
+            },
+          },
+          ...filters,
+        ],
       },
     });
 
