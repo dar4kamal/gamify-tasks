@@ -11,7 +11,11 @@ const getNumber = (object) => {
   return object?.number;
 };
 const getDate = (object) => {
-  return object?.date?.start;
+  return object?.date?.start === undefined
+    ? null
+    : new Date(object?.date?.start).toLocaleString("en-US", {
+        timeZone: "Africa/Cairo",
+      });
 };
 const getBoolean = (object) => {
   return object?.checkbox;
