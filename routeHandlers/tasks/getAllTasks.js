@@ -35,6 +35,12 @@ module.exports = async (req, res) => {
               contains: userId,
             },
           },
+          {
+            property: "removed",
+            checkbox: {
+              equals: false,
+            },
+          },
           ...filters,
         ],
       },
