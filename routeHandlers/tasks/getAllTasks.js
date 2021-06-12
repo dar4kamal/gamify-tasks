@@ -43,8 +43,9 @@ module.exports = async (req, res) => {
 
     const tasks = results.map((task) => task.properties);
 
-    const output = tasks.map((task) => {
+    const output = tasks.map((task, index) => {
       return {
+        id: results[index].id,
         name: getTitle(task.name),
         goals: task.goals.relation.map((goal, index) => {
           return {
