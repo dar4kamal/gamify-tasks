@@ -24,7 +24,10 @@ const notionIdMessages = (name) =>
 
 const TaskSchema = (mode = "new") =>
   Joi.object({
-    name: Joi.string().min(3).max(30).required().messages(nameMessages),
+    name:
+      mode == "update"
+        ? Joi.string().min(3).max(30).messages(nameMessages)
+        : Joi.string().min(3).max(30).required().messages(nameMessages),
     points:
       mode == "update"
         ? Joi.number().min(1).messages(pointsMessages)
