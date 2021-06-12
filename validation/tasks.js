@@ -46,6 +46,7 @@ const TaskSchema = (mode = "new") =>
             .pattern(idRegex)
             .required()
             .messages(notionIdMessages("goalId")),
+    done: Joi.boolean(),
   });
 
 module.exports = {

@@ -1,20 +1,26 @@
 const {
+  getDate,
   getTitle,
   getNumber,
   getBoolean,
   getRollUpItem,
-  getDate,
 } = require("../../utils/getData");
+const {
+  addDate,
+  addTitle,
+  addNumber,
+  addBoolean,
+  addRelation,
+} = require("../../utils/addData");
 const notion = require("../../notionClient");
 const parseErrors = require("../../utils/parseErrors");
 const { ValidateTask } = require("../../validation/tasks");
 const checkNotionId = require("../../utils/checkNotionId");
-const { addTitle, addNumber, addRelation } = require("../../utils/addData");
 
 module.exports = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const { name, points, userId, goalId } = req.body;
+    const { name, points, userId, goalId, done } = req.body;
 
     // validate task Id
     const { error: idError } = checkNotionId(taskId, "taskId");
@@ -22,7 +28,10 @@ module.exports = async (req, res) => {
       return res.json({ statusCode: 400, errors: parseErrors(idError) });
     }
     // validate task properties
-    const { error } = ValidateTask({ name, points, userId, goalId }, "update");
+    const { error } = ValidateTask(
+      { name, points, userId, goalId, done },
+      "update"
+    );
     if (error) {
       return res.json({ statusCode: 400, errors: parseErrors(error) });
     }
@@ -44,6 +53,8 @@ module.exports = async (req, res) => {
           : addNumber(getNumber(properties.points)),
         user: userId && addRelation(userId),
         goals: goalId && addRelation(goalId),
+        done: done ? addBoolean(done) : addBoolean(getBoolean(properties.done)),
+        doneAt: done ? addDate(new Date().toISOString()) : null,
       },
     });
 
@@ -60,6 +71,7 @@ module.exports = async (req, res) => {
       points: getNumber(task.points),
       done: getBoolean(task.done),
       createdAt: getDate(task.createdAt),
+      doneAt: getDate(task.doneAt),
     };
 
     return res.json(output);
