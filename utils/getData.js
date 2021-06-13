@@ -25,6 +25,10 @@ const getRollUpItem = (object, propertyName, index) => {
   return object[propertyName]?.rollup?.array[index];
 };
 
+const getRollUpArray = (object) => {
+  return object?.relation;
+};
+
 const getRollUpNumber = (object, propertyName) => {
   return object[propertyName]?.rollup?.number;
 };
@@ -37,5 +41,6 @@ module.exports = {
   getNumber,
   getBoolean,
   getRollUpItem,
+  getRollUpArray,
   getRollUpNumber,
 };
