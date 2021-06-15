@@ -45,14 +45,15 @@ module.exports = async (req, res) => {
       properties: {
         name: name && addTitle(name),
         tasks:
-          properties?.tasks?.length > 0
+          taskId &&
+          (getRollUpArray(properties?.tasks).length > 0
             ? {
                 relation: [
                   ...getRollUpArray(properties?.tasks),
                   { id: taskId },
                 ],
               }
-            : addRelation(taskId),
+            : addRelation(taskId)),
         done: done && addBoolean(done),
         doneAt: done && addDate(new Date().toISOString()),
       },

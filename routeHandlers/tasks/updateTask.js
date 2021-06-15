@@ -47,14 +47,12 @@ module.exports = async (req, res) => {
     results = await notion.pages.update({
       page_id: taskId,
       properties: {
-        name: name ? addTitle(name) : addTitle(getTitle(properties.name)),
-        points: points
-          ? addNumber(points)
-          : addNumber(getNumber(properties.points)),
+        name: name && addTitle(name),
+        points: points && addNumber(points),
         user: userId && addRelation(userId),
         goals: goalId && addRelation(goalId),
-        done: done ? addBoolean(done) : addBoolean(getBoolean(properties.done)),
-        doneAt: done ? addDate(new Date().toISOString()) : null,
+        done: done && addBoolean(done),
+        doneAt: done && addDate(new Date().toISOString()),
       },
     });
 

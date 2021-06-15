@@ -8,20 +8,28 @@ const nameMessages = getErrorMessages("string", "name", [
   "base",
   "empty",
   "min",
-  "max",
+  "required",
+]);
+const pointsMessages = getErrorMessages("number", "points", [
+  "base",
+  "empty",
+  "min",
   "required",
 ]);
 
 const notionIdMessages = (name) =>
   getErrorMessages("string", name, ["base", "empty", "pattern", "required"]);
 
-const GoalSchema = (mode = "new") =>
+const RewardSchema = (mode = "new") =>
   Joi.object({
     name:
       mode == "update"
-        ? Joi.string().min(3).max(30).messages(nameMessages)
-        : Joi.string().min(3).max(30).required().messages(nameMessages),
-    taskId: Joi.string().pattern(idRegex).messages(notionIdMessages("taskId")),
+        ? Joi.string().min(3).messages(nameMessages)
+        : Joi.string().min(3).required().messages(nameMessages),
+    points:
+      mode == "update"
+        ? Joi.number().min(1).messages(pointsMessages)
+        : Joi.number().min(1).required().messages(pointsMessages),
     userId:
       mode == "update"
         ? Joi.string().pattern(idRegex).messages(notionIdMessages("userId"))
@@ -29,10 +37,10 @@ const GoalSchema = (mode = "new") =>
             .pattern(idRegex)
             .required()
             .messages(notionIdMessages("userId")),
-    done: Joi.boolean(),
+    achevied: Joi.boolean(),
   });
 
 module.exports = {
   Validate: (data, mode) =>
-    GoalSchema(mode).validate(data, { abortEarly: false }),
+    RewardSchema(mode).validate(data, { abortEarly: false }),
 };
