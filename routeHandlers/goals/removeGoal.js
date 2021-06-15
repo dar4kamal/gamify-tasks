@@ -1,7 +1,6 @@
 const {
   getDate,
   getTitle,
-  getNumber,
   getBoolean,
   getRollUpItem,
 } = require("../../utils/getData");
@@ -12,58 +11,57 @@ const checkNotionId = require("../../utils/checkNotionId");
 
 module.exports = async (req, res) => {
   try {
-    const { taskId } = req.params;
+    const { goalId } = req.params;
 
-    // validate task Id
-    const { error: idError } = checkNotionId(taskId, "taskId");
+    // validate goal Id
+    const { error: idError } = checkNotionId(goalId, "goalId");
     if (idError) {
       return res.json({ statusCode: 400, errors: parseErrors(idError) });
     }
 
-    // check if task exists
+    // check if goal exists
     let results = await notion.pages.retrieve({
-      page_id: taskId,
+      page_id: goalId,
     });
 
     // TODO until notion provide a proper deletion for a page
     // * results = await notion.request({
-    // *   path: `pages/${taskId}`,
+    // *   path: `pages/${goalId}`,
     // *   method: "DELETE",
     // *   body: {
-    // *     parent: { database_id: process.env.TASKS_DB_ID },
+    // *     parent: { database_id: process.env.GOALS_DB_ID },
     // *   },
     // * });
 
-    // check if given Id refers to a task item
-    const isTask = results.parent.database_id == process.env.TASKS_DB_ID;
-    if (!isTask)
+    // check if given Id refers to a goal item
+    const isGoal = results.parent.database_id == process.env.GOALS_DB_ID;
+    if (!isGoal)
       return res.json({
         statusCode: 400,
-        errors: [{ input: "taskId", message: "Invalid Id" }],
+        errors: [{ input: "goalId", message: "Invalid Id" }],
       });
 
     results = await notion.pages.update({
-      page_id: taskId,
+      page_id: goalId,
       properties: {
         removed: addBoolean(true),
       },
     });
 
-    const task = results.properties;
+    const goal = results.properties;
 
     const output = {
-      name: getTitle(task.name),
-      goals: task.goals.relation.map((goal, index) => {
+      name: getTitle(goal.name),
+      tasks: goal.tasks.relation.map((task, index) => {
         return {
-          id: goal.id,
-          name: getTitle(getRollUpItem(task, "goalsName", index)),
+          id: task.id,
+          name: getTitle(getRollUpItem(goal, "tasksName", index)),
         };
       }),
-      points: getNumber(task.points),
-      done: getBoolean(task.done),
-      createdAt: getDate(task.createdAt),
-      doneAt: getDate(task.doneAt),
-      removed: getBoolean(task.removed),
+      done: getBoolean(goal.done),
+      createdAt: getDate(goal.createdAt),
+      doneAt: getDate(goal.doneAt),
+      removed: getBoolean(goal.removed),
     };
 
     return res.json(output);
@@ -72,7 +70,7 @@ module.exports = async (req, res) => {
     if (error.message.startsWith("Could not find page with ID"))
       return res.json({
         statusCode: 404,
-        errors: [{ input: "taskId", message: "Task Not Found ..." }],
+        errors: [{ input: "goalId", message: "Goal Not Found ..." }],
       });
     return res.json({ statusCode: 500, errors: [{ message: error.message }] });
   }
