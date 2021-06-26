@@ -1,6 +1,6 @@
 # Gamify Tasks
 
-REST-API CRUD Projects that consists of: 
+REST-API CRUD Project that consists of: 
 * Users
 * Tasks
 * Goals
